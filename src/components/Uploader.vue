@@ -1,22 +1,32 @@
 <template>
-    <ElImage class="image" fit="contain" :src="imageUrl" :preview-src-list="imageUrl ? [] : [imageUrl]">
-        <!-- 上传 -->
-        <template #error>
-            <div class="uploader">
+    <div class="image-container">
+        <ElImage class="image" fit="contain" :src="imageUrl" :preview-src-list="imageUrl ? [imageUrl] : []">
+            <!-- 上传 -->
+            <template #error>
+                <div class="uploader">
+                    <ElIcon>
+                        <Plus />
+                    </ElIcon>
+                    <input type="file" @change="handlerChange" @drop="handlerDrop"
+                        accept="image/jpg,image/png,image/jpeg" />
+                </div>
+            </template>
+        </ElImage>
+        <!-- 删除 -->
+        <transition name="fade-in">
+            <div class="delete-button" title="删除" v-if="imageUrl" @click="imageUrl = ''">
                 <ElIcon>
-                    <Plus />
+                    <Delete />
                 </ElIcon>
-                <input type="file" @change="handlerChange" @drop="handlerDrop"
-                    accept="image/jpg,image/png,image/jpeg" />
             </div>
-        </template>
-    </ElImage>
+        </transition>
+    </div>
 </template>
 <script lang="ts" setup>
 /* eslint-disable space-before-function-paren */
 /* eslint-disable indent */
 /* eslint-disable func-call-spacing */
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Delete } from '@element-plus/icons-vue'
 import { ref, defineProps, defineEmits, toRefs, watch } from 'vue'
 // 文件上传
 const emits = defineEmits<{
@@ -71,13 +81,42 @@ watch(value, () => {
 
 </script>
 <style lang="scss" scoped>
-.image {
-    width: 100%;
-    height: 100%;
-    min-width: 200px;
-    min-height: 200px;
-    max-height: 400px;
-    max-width: 400px;
+.image-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+
+    .image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .delete-button {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 4px;
+        cursor: pointer;
+        z-index: 10;
+        color: #fff;
+
+        &::before {
+            content: '';
+            width: 0;
+            height: 0;
+            position: absolute;
+            border-top: 40px solid #409EFF;
+            border-left: 40px solid transparent;
+            right: 0;
+            top: 0;
+            z-index: 0;
+        }
+    }
+
+    &:hover .delete-button {
+        display: block;
+    }
 }
 
 .uploader {
