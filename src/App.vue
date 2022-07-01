@@ -5,7 +5,7 @@
   <ElRow :gutter="8">
     <ElCol :span="12">
       <h3>水印加密</h3>
-      <ElForm size="small" label-width="120px" label-position="left" label-suffix=":">
+      <ElForm v-loading="isEncoding" size="small" label-width="120px" label-position="left" label-suffix=":">
         <ElFormItem label="水印文字">
           <ElInput style="max-width: 180px" v-model="watermark" />
         </ElFormItem>
@@ -21,8 +21,8 @@
           </ElRadioGroup>
         </ElFormItem>
         <transition name="el-fade-in-linear">
-          <ElFormItem v-if="!!sourceFile">
-            <ElButton type="primary" @click="encode">打水印</ElButton>
+          <ElFormItem v-if="!!encodedSourceFile">
+            <ElButton type="primary" @click="encode">解水印</ElButton>
           </ElFormItem>
         </transition>
         <ElFormItem>
@@ -34,7 +34,7 @@
     </ElCol>
     <ElCol :span="12">
       <h3>水印解密</h3>
-      <ElForm size="small" label-suffix=":" label-width="120px">
+      <ElForm v-loading="isDecoding" size="small" label-suffix=":" label-width="120px">
         <ElFormItem label="水印通道">
           <ElRadioGroup v-model="decodeChannel">
             <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
@@ -43,6 +43,11 @@
             </ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
+        <transition name="el-fade-in-linear">
+          <ElFormItem v-if="!!sourceFile">
+            <ElButton type="primary" @click="decode">打水印</ElButton>
+          </ElFormItem>
+        </transition>
         <ElFormItem>
           <Uploader :value="decodedFile" @upload="onUploadEncodedFile" />
         </ElFormItem>
@@ -54,6 +59,7 @@
 <script lang="ts" setup>
 /* eslint-disable space-before-function-paren */
 import { ref, onBeforeMount } from 'vue'
+import { ElMessage } from 'element-plus'
 import { CHANNEL, load, status, encode as addWatermark, decode as getWatermark } from './lib'
 import Uploader from './components/Uploader.vue'
 
@@ -89,7 +95,10 @@ const watermark = ref('测试水印')
 const fontSize = ref(1.1)
 const encodeChannel = ref(CHANNEL.B)
 
+const isEncoding = ref(false)
+
 const sourceFile = ref<File | null>(null)
+
 function onUploadSourceFile(file: File) {
   sourceFile.value = file
   encode()
@@ -99,36 +108,50 @@ async function encode() {
   if (!sourceFile.value) {
     return
   }
-  const result = await addWatermark(
-    sourceFile.value,
-    watermark.value,
-    fontSize.value,
-    encodeChannel.value
-  )
-  encodedFile.value = result
-  // 模拟上传了需要解码的图
-  decodeChannel.value = encodeChannel.value
-  onUploadEncodedFile(result)
+  isEncoding.value = true
+  try {
+    const result = await addWatermark(
+      sourceFile.value,
+      watermark.value,
+      fontSize.value,
+      encodeChannel.value
+    )
+    encodedFile.value = result
+
+    isEncoding.value = false
+    // 模拟上传了需要解码的图
+    decodeChannel.value = encodeChannel.value
+    onUploadEncodedFile(result)
+  } catch (e) {
+    ElMessage.error('加密失败')
+  }
+  isEncoding.value = false
 }
 
 // 图片解密
 const decodeChannel = ref(CHANNEL.B)
-
+const isDecoding = ref(false)
 const encodedSourceFile = ref<File | null>(null)
 
 function onUploadEncodedFile(file: File) {
   encodedSourceFile.value = file
-  decoded()
+  decode()
 }
 const decodedFile = ref<File | null>(null)
-async function decoded() {
+async function decode() {
   if (!encodedSourceFile.value) {
     return
   }
-  decodedFile.value = await getWatermark(
-    encodedSourceFile.value,
-    decodeChannel.value
-  )
+  isDecoding.value = true
+  try {
+    decodedFile.value = await getWatermark(
+      encodedSourceFile.value,
+      decodeChannel.value
+    )
+  } catch (e) {
+    ElMessage.error('解码失败')
+  }
+  isDecoding.value = false
 }
 
 </script>

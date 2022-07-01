@@ -1,6 +1,7 @@
 <template>
     <div class="image-container">
-        <ElImage class="image" fit="contain" :src="imageUrl" :preview-src-list="imageUrl ? [imageUrl] : []">
+        <ElImage download="download.jpg" class="image" fit="contain" :src="imageUrl"
+            :preview-src-list="imageUrl ? [imageUrl] : []">
             <!-- 上传 -->
             <template #error>
                 <div class="uploader">
