@@ -12,7 +12,7 @@ export const opencv = cv
 export enum CHANNEL {
   R = 2,
   G = 1,
-  B = 1
+  B = 0
 }
 
 /**
@@ -209,7 +209,7 @@ export async function encode (
   if ((typeof fontSize) !== 'number') {
     throw new Error('fontSize must be number')
   }
-  if ((typeof fontSize) !== 'string' || !watermarkText) {
+  if ((typeof watermarkText) !== 'string' || !watermarkText) {
     throw new Error('watermark is needed')
   }
 

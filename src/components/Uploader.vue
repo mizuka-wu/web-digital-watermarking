@@ -1,5 +1,5 @@
 <template>
-    <ElImage class="image" fit="contain">
+    <ElImage class="image" fit="contain" :src="imageUrl" :preview-src-list="imageUrl ? [] : [imageUrl]">
         <!-- 上传 -->
         <template #error>
             <div class="uploader">
@@ -15,18 +15,13 @@
 <script lang="ts" setup>
 /* eslint-disable space-before-function-paren */
 /* eslint-disable indent */
+/* eslint-disable func-call-spacing */
 import { Plus } from '@element-plus/icons-vue'
-import { ref, defineProps, defineEmits, toRefs } from 'vue'
-
-const props = defineProps<{
-    value?: File | null
-}>()
-// eslint-disable-next-line func-call-spacing
+import { ref, defineProps, defineEmits, toRefs, watch } from 'vue'
+// 文件上传
 const emits = defineEmits<{
     (event: 'upload', file: File): void
 }>()
-
-const { value } = toRefs(props)
 
 // 拖入文件
 function handlerDrop(e: DragEvent) {
@@ -41,7 +36,6 @@ function handlerDrop(e: DragEvent) {
         }
     }
 }
-
 // 上传文件
 function handlerChange(e: Event) {
     e.preventDefault()
@@ -56,6 +50,24 @@ function handlerChange(e: Event) {
         }
     }
 }
+
+// 生成图片
+const props = defineProps<{
+    value: File | null | undefined
+}>()
+const { value } = toRefs(props)
+const imageUrl = ref('')
+watch(value, () => {
+    if (imageUrl.value) {
+        URL.revokeObjectURL(imageUrl.value)
+        imageUrl.value = ''
+    }
+    if (value && value.value instanceof File) {
+        imageUrl.value = URL.createObjectURL(value.value)
+    }
+}, {
+    immediate: true
+})
 
 </script>
 <style lang="scss" scoped>
