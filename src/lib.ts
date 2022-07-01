@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
 import Jimp from 'jimp'
-import cv, { Mat, Scalar } from '@anpanman/opencv_ts'
+import cv, { Mat } from '@anpanman/opencv_ts'
 import { Buffer } from 'buffer'
 
 export const status = {
@@ -197,7 +197,7 @@ function matToBuffer (mat: Mat) {
  * @param channel
  * @returns
  */
-async function encode (
+export async function encode (
   source: File | ArrayBuffer | Buffer,
   watermarkText: string,
   fontSize = 1.1,
@@ -225,7 +225,7 @@ async function encode (
   }
 
   const jimpSrc = await Jimp.read(sourceBuffer)
-  const srcImg = cv.matFromImageData(jimpSrc.bitmap as ImageData)
+  const srcImg = cv.matFromImageData(jimpSrc.bitmap as unknown as ImageData)
   if (srcImg.empty()) { throw new Error('read image failed') }
   const comImg = transFormMatWithText(srcImg, watermarkText, fontSize, channel)
   const imgRes = new Jimp({
@@ -244,7 +244,7 @@ async function encode (
  * @param channel
  * @returns
  */
-async function decode (
+export async function decode (
   source: File | ArrayBuffer | Buffer,
   channel: CHANNEL = CHANNEL.B
 ): Promise<File> {
@@ -264,7 +264,7 @@ async function decode (
   }
 
   const jimpSrc = await Jimp.read(sourceBuffer)
-  const comImg = cv.matFromImageData(jimpSrc.bitmap as ImageData)
+  const comImg = cv.matFromImageData(jimpSrc.bitmap as unknown as ImageData)
   const backImage = getTextFormMat(comImg, channel)
   const imgRes = await new Jimp({
     width: backImage.cols,
