@@ -12,10 +12,12 @@
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",
     "element-plus": "^2.2.8",
+    "file-saver": "^2.0.5",
     "jimp": "^0.16.1",
     "vue": "^3.0.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.5",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.10",

@@ -1,6 +1,6 @@
 <template>
     <div class="image-container">
-        <ElImage download="download.jpg" class="image" fit="contain" :src="imageUrl"
+        <ElImage @contextmenu.stop download="download.jpg" class="image" fit="contain" :src="imageUrl"
             :preview-src-list="imageUrl ? [imageUrl] : []">
             <!-- 上传 -->
             <template #error>
@@ -21,14 +21,23 @@
                 </ElIcon>
             </div>
         </transition>
+        <!-- 下载 -->
+        <transition name="el-fade-in-linear">
+            <div class="download-button" title="下载" v-if="imageUrl" @click="downloadImage">
+                <ElIcon>
+                    <Download />
+                </ElIcon>
+            </div>
+        </transition>
     </div>
 </template>
 <script lang="ts" setup>
 /* eslint-disable space-before-function-paren */
 /* eslint-disable indent */
 /* eslint-disable func-call-spacing */
-import { Plus, Delete } from '@element-plus/icons-vue'
+import { Plus, Delete, Download } from '@element-plus/icons-vue'
 import { ref, defineProps, defineEmits, toRefs, watch } from 'vue'
+import { saveAs } from 'file-saver'
 // 文件上传
 const emits = defineEmits<{
     (event: 'upload', file: File): void
@@ -89,6 +98,13 @@ function deleteImage() {
     }
 }
 
+// 下载图片
+function downloadImage() {
+    if (value.value) {
+        saveAs(value.value, value.value.name)
+    }
+}
+
 </script>
 <style lang="scss" scoped>
 .image-container {
@@ -125,6 +141,23 @@ function deleteImage() {
     }
 
     &:hover .delete-button {
+        display: block;
+    }
+
+    .download-button {
+        display: none;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 4px;
+        z-index: 10;
+        color: #fff;
+        background: #409EFF;
+        cursor: pointer;
+    }
+
+    &:hover .download-button {
         display: block;
     }
 }

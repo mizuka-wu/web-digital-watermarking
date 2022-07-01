@@ -23,7 +23,7 @@
           </ElFormItem>
           <transition name="el-fade-in-linear">
             <ElFormItem v-if="!!encodedSourceFile">
-              <ElButton type="primary" @click="encode">解水印</ElButton>
+              <ElButton type="primary" @click="encode">打水印</ElButton>
             </ElFormItem>
           </transition>
           <ElFormItem>
@@ -46,7 +46,7 @@
           </ElFormItem>
           <transition name="el-fade-in-linear">
             <ElFormItem v-if="!!sourceFile">
-              <ElButton type="primary" @click="decode">打水印</ElButton>
+              <ElButton type="primary" @click="decode">查水印</ElButton>
             </ElFormItem>
           </transition>
           <ElFormItem>
