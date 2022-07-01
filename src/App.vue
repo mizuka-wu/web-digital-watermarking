@@ -13,7 +13,7 @@
           <ElInputNumber :min="1" :step="0.1" v-model="fontSize" />
         </ElFormItem>
         <ElFormItem label="水印通道">
-          <ElRadioGroup v-model="channel">
+          <ElRadioGroup v-model="encodeChannel">
             <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
               :key="channelOption.value">
               {{ channelOption.label }}
@@ -33,7 +33,20 @@
       <!-- 结果 -->
     </ElCol>
     <ElCol :span="12">
-      <div class="grid-content ep-bg-purple-dark" />
+      <h3>水印解密</h3>
+      <ElForm size="small" label-suffix=":" label-width="120px">
+        <ElFormItem label="水印通道">
+          <ElRadioGroup v-model="decodeChannel">
+            <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
+              :key="channelOption.value">
+              {{ channelOption.label }}
+            </ElRadioButton>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem>
+          <Uploader :value="decodedFile" @upload="onUploadEncodedFile" />
+        </ElFormItem>
+      </ElForm>
     </ElCol>
   </ElRow>
 </template>
@@ -41,7 +54,7 @@
 <script lang="ts" setup>
 /* eslint-disable space-before-function-paren */
 import { ref, onBeforeMount } from 'vue'
-import { CHANNEL, load, status, encode as addWatermark } from './lib'
+import { CHANNEL, load, status, encode as addWatermark, decode as getWatermark } from './lib'
 import Uploader from './components/Uploader.vue'
 
 const isOpencvLoaded = ref(status.loaded)
@@ -52,11 +65,6 @@ onBeforeMount(async () => {
     isOpencvLoaded.value = true
   }
 })
-
-// 水印设置
-const watermark = ref('测试水印')
-const fontSize = ref(1.1)
-const channel = ref(CHANNEL.B)
 
 // 水印选项
 const channelOptions = [
@@ -75,6 +83,12 @@ const channelOptions = [
 ]
 
 // 图片加密
+
+// 加码水印设置
+const watermark = ref('测试水印')
+const fontSize = ref(1.1)
+const encodeChannel = ref(CHANNEL.B)
+
 const sourceFile = ref<File | null>(null)
 function onUploadSourceFile(file: File) {
   sourceFile.value = file
@@ -89,9 +103,32 @@ async function encode() {
     sourceFile.value,
     watermark.value,
     fontSize.value,
-    channel.value
+    encodeChannel.value
   )
   encodedFile.value = result
+  // 模拟上传了需要解码的图
+  decodeChannel.value = encodeChannel.value
+  onUploadEncodedFile(result)
+}
+
+// 图片解密
+const decodeChannel = ref(CHANNEL.B)
+
+const encodedSourceFile = ref<File | null>(null)
+
+function onUploadEncodedFile(file: File) {
+  encodedSourceFile.value = file
+  decoded()
+}
+const decodedFile = ref<File | null>(null)
+async function decoded() {
+  if (!encodedSourceFile.value) {
+    return
+  }
+  decodedFile.value = await getWatermark(
+    encodedSourceFile.value,
+    decodeChannel.value
+  )
 }
 
 </script>
