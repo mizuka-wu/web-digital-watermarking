@@ -1,59 +1,61 @@
 <template>
-  <ElBadge :value="isOpencvLoaded ? '加载完成' : '加载中'" :type="isOpencvLoaded ? 'danger' : 'success'">
+  <ElBadge :value="isOpencvLoaded ? '加载完成' : '加载中'" :type="isOpencvLoaded ? 'success' : 'info'">
     <div>Opencv状态</div>
   </ElBadge>
-  <ElRow :gutter="8">
-    <ElCol :span="12">
-      <h3>水印加密</h3>
-      <ElForm v-loading="isEncoding" size="small" label-width="120px" label-position="left" label-suffix=":">
-        <ElFormItem label="水印文字">
-          <ElInput style="max-width: 180px" v-model="watermark" />
-        </ElFormItem>
-        <ElFormItem label="水印文字大小">
-          <ElInputNumber :min="1" :step="0.1" v-model="fontSize" />
-        </ElFormItem>
-        <ElFormItem label="水印通道">
-          <ElRadioGroup v-model="encodeChannel">
-            <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
-              :key="channelOption.value">
-              {{ channelOption.label }}
-            </ElRadioButton>
-          </ElRadioGroup>
-        </ElFormItem>
-        <transition name="el-fade-in-linear">
-          <ElFormItem v-if="!!encodedSourceFile">
-            <ElButton type="primary" @click="encode">解水印</ElButton>
+  <transition name="el-fade-in-linear">
+    <ElRow :gutter="8" v-if="isOpencvLoaded">
+      <ElCol :span="12">
+        <h3>水印加密</h3>
+        <ElForm v-loading="isEncoding" size="small" label-width="120px" label-position="left" label-suffix=":">
+          <ElFormItem label="水印文字">
+            <ElInput style="max-width: 180px" v-model="watermark" />
           </ElFormItem>
-        </transition>
-        <ElFormItem>
-          <!-- 图片上传与显示 -->
-          <Uploader :value="encodedFile" @upload="onUploadSourceFile" />
-        </ElFormItem>
-      </ElForm>
-      <!-- 结果 -->
-    </ElCol>
-    <ElCol :span="12">
-      <h3>水印解密</h3>
-      <ElForm v-loading="isDecoding" size="small" label-suffix=":" label-width="120px">
-        <ElFormItem label="水印通道">
-          <ElRadioGroup v-model="decodeChannel">
-            <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
-              :key="channelOption.value">
-              {{ channelOption.label }}
-            </ElRadioButton>
-          </ElRadioGroup>
-        </ElFormItem>
-        <transition name="el-fade-in-linear">
-          <ElFormItem v-if="!!sourceFile">
-            <ElButton type="primary" @click="decode">打水印</ElButton>
+          <ElFormItem label="水印文字大小">
+            <ElInputNumber :min="1" :step="0.1" v-model="fontSize" />
           </ElFormItem>
-        </transition>
-        <ElFormItem>
-          <Uploader :value="decodedFile" @upload="onUploadEncodedFile" />
-        </ElFormItem>
-      </ElForm>
-    </ElCol>
-  </ElRow>
+          <ElFormItem label="水印通道">
+            <ElRadioGroup v-model="encodeChannel">
+              <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
+                :key="channelOption.value">
+                {{ channelOption.label }}
+              </ElRadioButton>
+            </ElRadioGroup>
+          </ElFormItem>
+          <transition name="el-fade-in-linear">
+            <ElFormItem v-if="!!encodedSourceFile">
+              <ElButton type="primary" @click="encode">解水印</ElButton>
+            </ElFormItem>
+          </transition>
+          <ElFormItem>
+            <!-- 图片上传与显示 -->
+            <Uploader :value="encodedFile" @upload="onUploadSourceFile" />
+          </ElFormItem>
+        </ElForm>
+        <!-- 结果 -->
+      </ElCol>
+      <ElCol :span="12">
+        <h3>水印解密</h3>
+        <ElForm v-loading="isDecoding" size="small" label-suffix=":" label-width="120px">
+          <ElFormItem label="水印通道">
+            <ElRadioGroup v-model="decodeChannel">
+              <ElRadioButton :label="channelOption.value" v-for="channelOption of channelOptions"
+                :key="channelOption.value">
+                {{ channelOption.label }}
+              </ElRadioButton>
+            </ElRadioGroup>
+          </ElFormItem>
+          <transition name="el-fade-in-linear">
+            <ElFormItem v-if="!!sourceFile">
+              <ElButton type="primary" @click="decode">打水印</ElButton>
+            </ElFormItem>
+          </transition>
+          <ElFormItem>
+            <Uploader :value="decodedFile" @upload="onUploadEncodedFile" />
+          </ElFormItem>
+        </ElForm>
+      </ElCol>
+    </ElRow>
+  </transition>
 </template>
 
 <script lang="ts" setup>

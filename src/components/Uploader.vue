@@ -14,7 +14,7 @@
             </template>
         </ElImage>
         <!-- 删除 -->
-        <transition name="fade-in">
+        <transition name="el-fade-in-linear">
             <div class="delete-button" title="删除" v-if="imageUrl" @click="deleteImage">
                 <ElIcon>
                     <Delete />
