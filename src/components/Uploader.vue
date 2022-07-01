@@ -14,7 +14,7 @@
         </ElImage>
         <!-- 删除 -->
         <transition name="fade-in">
-            <div class="delete-button" title="删除" v-if="imageUrl" @click="imageUrl = ''">
+            <div class="delete-button" title="删除" v-if="imageUrl" @click="deleteImage">
                 <ElIcon>
                     <Delete />
                 </ElIcon>
@@ -78,6 +78,15 @@ watch(value, () => {
 }, {
     immediate: true
 })
+
+// 移除图片
+function deleteImage() {
+    if (imageUrl.value) {
+        const url = imageUrl.value
+        imageUrl.value = ''
+        URL.revokeObjectURL(url)
+    }
+}
 
 </script>
 <style lang="scss" scoped>
