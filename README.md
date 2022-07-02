@@ -39,7 +39,7 @@
 # Install
 # npm i web-digital-watermarking
 
-import { CHANNEL, load, status, encode as addWatermark, decode as getWatermark } from 'web-digital-watermarking'
+import { CHANNEL, load, status, encode as addWatermark, decode as getWatermark } from '@mizuka/web-digital-watermarking'
 
 ```
 
