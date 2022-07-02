@@ -4,7 +4,7 @@
   </ElBadge>
   <transition name="el-fade-in-linear">
     <ElRow :gutter="8" v-if="isOpencvLoaded">
-      <ElCol :span="12">
+      <ElCol :span="12" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <h3>水印加密</h3>
         <ElForm v-loading="isEncoding" size="small" label-width="120px" label-position="left" label-suffix=":">
           <ElFormItem label="水印文字">
@@ -33,7 +33,7 @@
         </ElForm>
         <!-- 结果 -->
       </ElCol>
-      <ElCol :span="12">
+      <ElCol :span="12" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <h3>水印解密</h3>
         <ElForm v-loading="isDecoding" size="small" label-suffix=":" label-width="120px">
           <ElFormItem label="水印通道">
