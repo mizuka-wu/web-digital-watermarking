@@ -18,9 +18,14 @@
     "digital watermarking",
     "Blind watermark"
   ],
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build:demo": "vue-cli-service build --dest examples",
+    "build:types": "tsc -d --declarationDir dist --emitDeclarationOnly --esModuleInterop true src/lib.ts && mv dist/lib.d.ts dist/index.d.ts",
     "build": "vue-cli-service build --target lib src/lib.ts",
     "lint": "vue-cli-service lint"
   },
