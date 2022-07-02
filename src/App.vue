@@ -8,7 +8,7 @@
         <h3>水印加密</h3>
         <ElForm v-loading="isEncoding" size="small" label-width="120px" label-position="left" label-suffix=":">
           <ElFormItem label="水印文字">
-            <ElInput style="max-width: 180px" v-model="watermark" />
+            <ElInput style="max-width: 180px" v-model="watermark" placeholder="仅支持英文" />
           </ElFormItem>
           <ElFormItem label="水印文字大小">
             <ElInputNumber :min="1" :step="0.1" v-model="fontSize" />
@@ -93,7 +93,7 @@ const channelOptions = [
 // 图片加密
 
 // 加码水印设置
-const watermark = ref('测试水印')
+const watermark = ref('test')
 const fontSize = ref(1.1)
 const encodeChannel = ref(CHANNEL.B)
 
