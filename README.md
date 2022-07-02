@@ -33,10 +33,13 @@
 
 ## 如何使用
 
+待测试并上传
+
 ```bash
 # Install
-npm i web-digital-watermarking
+# npm i web-digital-watermarking
 
+import { CHANNEL, load, status, encode as addWatermark, decode as getWatermark } from 'web-digital-watermarking'
 
 ```
 
