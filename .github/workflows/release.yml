@@ -28,6 +28,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run build
+      - run: npm run build:types
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
         with:
